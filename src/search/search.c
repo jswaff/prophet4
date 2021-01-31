@@ -124,7 +124,7 @@ static int32_t search_helper(position_t* pos, move_line_t* parent_pv,
             hash_entry_type_t hash_entry_type = get_hash_entry_type(hash_val);
             if (hash_entry_type == LOWER_BOUND) 
             {
-                if (get_hash_entry_score(hash_val) >= beta) 
+                if (get_hash_entry_score(hash_val, ply) >= beta) 
                 {
                     stats->fail_highs++;
                     stats->hash_fail_highs++;
@@ -133,7 +133,7 @@ static int32_t search_helper(position_t* pos, move_line_t* parent_pv,
             } 
             else if (hash_entry_type == UPPER_BOUND) 
             {
-                if (get_hash_entry_score(hash_val) <= alpha) 
+                if (get_hash_entry_score(hash_val, ply) <= alpha) 
                 {
                     stats->fail_lows++;
                     stats->hash_fail_lows++;
@@ -143,7 +143,7 @@ static int32_t search_helper(position_t* pos, move_line_t* parent_pv,
             else if (hash_entry_type == EXACT_SCORE) 
             {
                 stats->hash_exact_scores++;
-                return get_hash_entry_score(hash_val);
+                return get_hash_entry_score(hash_val, ply);
             }
         }
 
@@ -217,7 +217,7 @@ static int32_t search_helper(position_t* pos, move_line_t* parent_pv,
         {
             stats->fail_highs++;
             store_hash_entry(&htbl, pos->hash_key, 
-                build_hash_val(LOWER_BOUND, depth, beta, *mp));
+                build_hash_val(LOWER_BOUND, ply, depth, beta, *mp));
             if (!is_capture(*mp) && !get_promopiece(*mp))
             {
                 add_killer(*mp, ply);
@@ -256,7 +256,7 @@ static int32_t search_helper(position_t* pos, move_line_t* parent_pv,
         tet = EXACT_SCORE;
     }
     store_hash_entry(&htbl, pos->hash_key, 
-        build_hash_val(tet, depth, alpha, best_move));
+        build_hash_val(tet, ply, depth, alpha, best_move));
 
     return alpha;
 }

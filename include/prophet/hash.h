@@ -133,13 +133,14 @@ uint64_t probe_hash(hash_table_t *tbl, uint64_t key);
  * \brief Build a hash value.
  *
  * \param entry_type    the type of hash entry
+ * \param ply           distance from root
  * \param depth         the depth of the search backing the score
  * \param score         the score to hash
  * \param mv            the move
  *
  * \return - the encoded value
  */
-uint64_t build_hash_val(hash_entry_type_t entry_type, int32_t depth, 
+uint64_t build_hash_val(hash_entry_type_t entry_type, int32_t ply, int32_t depth, 
     int32_t score, move_t mv);
 
 
@@ -167,10 +168,11 @@ int32_t get_hash_entry_depth(uint64_t val);
  * \brief Get the hash entry score
  *
  * \param val           the hashed value
+ * \param ply           distance from root
  *
  * \return - the hash entry score
  */
-int32_t get_hash_entry_score(uint64_t val);
+int32_t get_hash_entry_score(uint64_t val, int32_t ply);
 
 
 /**
