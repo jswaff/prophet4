@@ -22,25 +22,44 @@ uint64_t build_hash_val(hash_entry_type_t entry_type, int32_t ply, int32_t depth
     /* convert mate scores */
     if (score >= CHECKMATE-500) 
     {
-        /* this score is Mate in N from the root.  We want Mate in M from the current position.
-         * e.g. Mate in 5 (from root) ==> Mate in 3 (from current position)
-         * therefore, we remove the distance between the root and the current node
-         */
-        score += ply;
+        if (entry_type == UPPER_BOUND)
+        {
+            /* failing low on mate score? */
+            entry_type = MOVE_ONLY;
+        }
+        else
+        {
+            entry_type = LOWER_BOUND;
+            /* make the score relative to the current position */
+            score += ply;
+            assert(score <= CHECKMATE);
+        }
     } 
     else if (score <= -(CHECKMATE-500)) 
     {
-        score -= ply;
+        if (entry_type == LOWER_BOUND)
+        {
+            /* failing high on mated score */
+            entry_type = MOVE_ONLY;
+        }
+        else
+        {
+            entry_type = UPPER_BOUND;
+            score -= ply;
+            assert(score >= -CHECKMATE);
+        }
     }
 
     uint64_t val = (uint64_t)entry_type;
     val |= ((uint64_t)depth) << 2;
     if (score >= 0) 
     {
+        assert(score <= 65535); /* 16 bits */
         val |= ((uint64_t)score) << 18;
     } 
     else 
     {
+        assert(score >= -65535); 
         val |= ((uint64_t)-score) << 18;
         val |= ((uint64_t)1) << 34;
     }
@@ -87,7 +106,7 @@ int32_t get_hash_entry_depth(uint64_t val)
  *
  * \return - the hash entry score
  */
-int32_t get_hash_entry_score(uint64_t val, int32_t ply) 
+int32_t get_hash_entry_score(uint64_t val, int32_t ply)
 {
     assert(get_hash_entry_type(val) != MOVE_ONLY);
     int32_t score = ((val >> 18) & 0xFFFF);

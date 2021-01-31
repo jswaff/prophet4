@@ -81,7 +81,8 @@ static int32_t search_helper(position_t* pos, move_line_t* parent_pv,
     bool incheck, bool null_move_ok, move_t* move_stack, undo_t* undo_stack, 
     stats_t* stats, search_options_t* opts)
 {
-    assert (depth >= 0);
+    assert(depth >= 0);
+    assert(beta >= alpha);
 
     parent_pv->n = 0;
 
@@ -148,7 +149,8 @@ static int32_t search_helper(position_t* pos, move_line_t* parent_pv,
         }
 
         /* null move */
-        if (!first && !incheck && null_move_ok && depth >= 3 && !zugzwang(pos))
+        if (!first && !incheck && null_move_ok && depth >= 3 && alpha > -(CHECKMATE-500) 
+            && beta < (CHECKMATE-500) && !zugzwang(pos))
         {
             square_t ep_sq = apply_null_move(pos);
             int null_depth = depth - 4; /* R=3 */

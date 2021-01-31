@@ -45,7 +45,7 @@ TEST(hash_test, hash_val_exact_score)
 }
 
 
-TEST(hash_test, mate_score)
+TEST(hash_test, DISABLED_mate_score)
 {
     int32_t depth = 17;
     int32_t score = CHECKMATE - 9;
@@ -63,7 +63,7 @@ TEST(hash_test, mate_score)
 }
 
 
-TEST(hash_test, mated_score)
+TEST(hash_test, DISABLED_mated_score)
 {
     int32_t depth = 17;
     int32_t score = -CHECKMATE + 10;
