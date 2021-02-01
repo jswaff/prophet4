@@ -45,15 +45,15 @@ TEST(hash_test, hash_val_exact_score)
 }
 
 
-TEST(hash_test, DISABLED_mate_score)
+TEST(hash_test, mate_score)
 {
     int32_t depth = 17;
     int32_t score = CHECKMATE - 9;
     move_t mv = to_move(QUEEN, A1, A8);
     // mate in 9 from ply 3, which should be stored as mate in 6 from the root
-    uint64_t val = build_hash_val(UPPER_BOUND, 3, depth, score, mv);
+    uint64_t val = build_hash_val(LOWER_BOUND, 3, depth, score, mv);
 
-    ASSERT_EQ(UPPER_BOUND, get_hash_entry_type(val));
+    ASSERT_EQ(LOWER_BOUND, get_hash_entry_type(val));
     ASSERT_EQ(depth, get_hash_entry_depth(val));
     ASSERT_EQ(CHECKMATE - 6, get_hash_entry_score(val, 0));
 
@@ -63,15 +63,15 @@ TEST(hash_test, DISABLED_mate_score)
 }
 
 
-TEST(hash_test, DISABLED_mated_score)
+TEST(hash_test, mated_score)
 {
     int32_t depth = 17;
     int32_t score = -CHECKMATE + 10;
     move_t mv = to_move(QUEEN, A8, A1);
     // mated in 10 from ply 4, which should be stored as mated in 6 from root
-    uint64_t val = build_hash_val(LOWER_BOUND, 4, depth, score, mv);
+    uint64_t val = build_hash_val(UPPER_BOUND, 4, depth, score, mv);
 
-    ASSERT_EQ(LOWER_BOUND, get_hash_entry_type(val));
+    ASSERT_EQ(UPPER_BOUND, get_hash_entry_type(val));
     ASSERT_EQ(depth, get_hash_entry_depth(val));
     ASSERT_EQ(-(CHECKMATE - 6), get_hash_entry_score(val, 0)); 
     ASSERT_EQ(-(CHECKMATE - 8), get_hash_entry_score(val, 2));
