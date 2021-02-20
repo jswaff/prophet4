@@ -149,8 +149,7 @@ static int32_t search_helper(position_t* pos, move_line_t* parent_pv,
         }
 
         /* null move */
-        if (!first && !incheck && null_move_ok && depth >= 3 && alpha > -(CHECKMATE-500) 
-            && beta < (CHECKMATE-500) && !zugzwang(pos))
+        if (!first && !incheck && null_move_ok && depth >= 3 && alpha > -(CHECKMATE-500) && !zugzwang(pos))
         {
             square_t ep_sq = apply_null_move(pos);
             int null_depth = depth - 4; /* R=3 */

@@ -22,31 +22,21 @@ uint64_t build_hash_val(hash_entry_type_t entry_type, int32_t ply, int32_t depth
     /* convert mate scores */
     if (score >= CHECKMATE-500) 
     {
-        if (entry_type == UPPER_BOUND)
+        /* make the score relative to the current position */
+        score += ply;
+        if (score > CHECKMATE)
         {
-            /* failing low on mate score? */
             entry_type = MOVE_ONLY;
-        }
-        else
-        {
-            entry_type = LOWER_BOUND;
-            /* make the score relative to the current position */
-            score += ply;
-            assert(score <= CHECKMATE);
+            score = 0;
         }
     } 
     else if (score <= -(CHECKMATE-500)) 
     {
-        if (entry_type == LOWER_BOUND)
+        score -= ply;
+        if (score < -CHECKMATE)
         {
-            /* failing high on mated score */
             entry_type = MOVE_ONLY;
-        }
-        else
-        {
-            entry_type = UPPER_BOUND;
-            score -= ply;
-            assert(score >= -CHECKMATE);
+            score = 0;
         }
     }
 
